@@ -1,0 +1,17 @@
+//
+//  LablibLabjackU6_Prefix.pch
+//  LablibLabjackU6
+//
+//  Created by Supratim Ray on 12/05/15.
+//  Copyright (c) 2015 Supratim Ray. All rights reserved.
+//
+
+#ifndef LablibLabjackU6_LablibLabjackU6_Prefix_pch
+#define LablibLabjackU6_LablibLabjackU6_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+# import <Cocoa/Cocoa.h>
+
+#endif

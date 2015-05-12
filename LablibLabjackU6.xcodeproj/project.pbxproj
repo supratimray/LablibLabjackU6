@@ -6,9 +6,21 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		11C7F3831B01FCEB005937EB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C7F3821B01FCEB005937EB /* Cocoa.framework */; };
+		11C7F3851B01FD03005937EB /* Lablib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C7F3841B01FD03005937EB /* Lablib.framework */; };
+		11C7F3881B020057005937EB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11C7F3871B020057005937EB /* Info.plist */; };
+		11C7F38F1B020312005937EB /* LLLabjackU6DataDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C7F38E1B020312005937EB /* LLLabjackU6DataDevice.m */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		11C7F3781B01FC66005937EB /* LablibLabjackU6.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LablibLabjackU6.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		11C7F37C1B01FC66005937EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11C7F3781B01FC66005937EB /* LablibLabjackU6.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LablibLabjackU6.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		11C7F3821B01FCEB005937EB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		11C7F3841B01FD03005937EB /* Lablib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lablib.framework; path = /Documents/Lablib/Frameworks/Lablib/build/Development/Lablib.framework; sourceTree = "<absolute>"; };
+		11C7F3861B01FFDE005937EB /* LablibLabjackU6_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LablibLabjackU6_Prefix.pch; sourceTree = "<group>"; };
+		11C7F3871B020057005937EB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11C7F38D1B020294005937EB /* LLLabjackU6DataDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LLLabjackU6DataDevice.h; sourceTree = "<group>"; };
+		11C7F38E1B020312005937EB /* LLLabjackU6DataDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLLabjackU6DataDevice.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C7F3851B01FD03005937EB /* Lablib.framework in Frameworks */,
+				11C7F3831B01FCEB005937EB /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25,7 +39,10 @@
 		11C7F36F1B01FC66005937EB = {
 			isa = PBXGroup;
 			children = (
-				11C7F37A1B01FC66005937EB /* LablibLabjackU6 */,
+				11C7F38C1B02010A005937EB /* Frameworks */,
+				11C7F3891B0200B3005937EB /* Classes */,
+				11C7F38A1B0200BD005937EB /* Other Sources */,
+				11C7F38B1B0200D2005937EB /* Resources */,
 				11C7F3791B01FC66005937EB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -33,25 +50,43 @@
 		11C7F3791B01FC66005937EB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				11C7F3781B01FC66005937EB /* LablibLabjackU6.bundle */,
+				11C7F3781B01FC66005937EB /* LablibLabjackU6.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		11C7F37A1B01FC66005937EB /* LablibLabjackU6 */ = {
+		11C7F3891B0200B3005937EB /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				11C7F37B1B01FC66005937EB /* Supporting Files */,
+				11C7F38D1B020294005937EB /* LLLabjackU6DataDevice.h */,
+				11C7F38E1B020312005937EB /* LLLabjackU6DataDevice.m */,
 			);
-			path = LablibLabjackU6;
+			name = Classes;
 			sourceTree = "<group>";
 		};
-		11C7F37B1B01FC66005937EB /* Supporting Files */ = {
+		11C7F38A1B0200BD005937EB /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				11C7F37C1B01FC66005937EB /* Info.plist */,
+				11C7F3861B01FFDE005937EB /* LablibLabjackU6_Prefix.pch */,
 			);
-			name = "Supporting Files";
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		11C7F38B1B0200D2005937EB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				11C7F3871B020057005937EB /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		11C7F38C1B02010A005937EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				11C7F3821B01FCEB005937EB /* Cocoa.framework */,
+				11C7F3841B01FD03005937EB /* Lablib.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,7 +106,7 @@
 			);
 			name = LablibLabjackU6;
 			productName = LablibLabjackU6;
-			productReference = 11C7F3781B01FC66005937EB /* LablibLabjackU6.bundle */;
+			productReference = 11C7F3781B01FC66005937EB /* LablibLabjackU6.plugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -110,6 +145,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C7F3881B020057005937EB /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,20 +156,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C7F38F1B020312005937EB /* LLLabjackU6DataDevice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		11C7F37D1B01FC66005937EB /* Debug */ = {
+		11C7F37D1B01FC66005937EB /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -161,19 +198,19 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 			};
-			name = Debug;
+			name = Development;
 		};
 		11C7F37E1B01FC66005937EB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -196,30 +233,44 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		11C7F3801B01FC67005937EB /* Debug */ = {
+		11C7F3801B01FC67005937EB /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = LablibLabjackU6/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				CONFIGURATION_BUILD_DIR = "$HOME/Library/Application Support/Knot/Plugins/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Documents/Lablib/Frameworks/Lablib/build/Development,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = LablibLabjackU6_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				WRAPPER_EXTENSION = bundle;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = plugin;
 			};
-			name = Debug;
+			name = Development;
 		};
 		11C7F3811B01FC67005937EB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = LablibLabjackU6/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Documents/Lablib/Frameworks/Lablib/build/Development,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = LablibLabjackU6_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -230,7 +281,7 @@
 		11C7F3731B01FC66005937EB /* Build configuration list for PBXProject "LablibLabjackU6" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				11C7F37D1B01FC66005937EB /* Debug */,
+				11C7F37D1B01FC66005937EB /* Development */,
 				11C7F37E1B01FC66005937EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -239,7 +290,7 @@
 		11C7F37F1B01FC67005937EB /* Build configuration list for PBXNativeTarget "LablibLabjackU6" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				11C7F3801B01FC67005937EB /* Debug */,
+				11C7F3801B01FC67005937EB /* Development */,
 				11C7F3811B01FC67005937EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
