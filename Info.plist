@@ -23,6 +23,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2015 Supratim Ray. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
-	<string></string>
+	<string>LLLabjackU6DataDevice</string>
 </dict>
 </plist>

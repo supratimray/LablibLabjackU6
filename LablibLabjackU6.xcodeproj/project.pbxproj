@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		114325F61B0B5DB800F13C31 /* LLLabjackU6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLLabjackU6.h; sourceTree = "<group>"; };
 		11C7F3781B01FC66005937EB /* LablibLabjackU6.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LablibLabjackU6.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C7F3821B01FCEB005937EB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		11C7F3841B01FD03005937EB /* Lablib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lablib.framework; path = /Documents/Lablib/Frameworks/Lablib/build/Development/Lablib.framework; sourceTree = "<absolute>"; };
@@ -68,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				11C7F3861B01FFDE005937EB /* LablibLabjackU6_Prefix.pch */,
+				114325F61B0B5DB800F13C31 /* LLLabjackU6.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -294,6 +296,7 @@
 				11C7F3811B01FC67005937EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
