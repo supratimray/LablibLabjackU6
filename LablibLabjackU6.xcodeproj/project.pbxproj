@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		110B47531B62090C00FB9C07 /* LLLabjackU6DataSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 110B47511B62090C00FB9C07 /* LLLabjackU6DataSettings.xib */; };
+		110B47541B62090C00FB9C07 /* LLLabjackU6MonitorSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 110B47521B62090C00FB9C07 /* LLLabjackU6MonitorSettings.xib */; };
+		110B47571B6212A000FB9C07 /* LLLabjackU6DataDevice.plist in Resources */ = {isa = PBXBuildFile; fileRef = 110B47561B6212A000FB9C07 /* LLLabjackU6DataDevice.plist */; };
+		110B475C1B6213F900FB9C07 /* LLLabjackU6Monitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 110B47591B6213F900FB9C07 /* LLLabjackU6Monitor.m */; };
+		110B475D1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 110B475B1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.m */; };
+		11C34D3D1B6A380F0046757A /* u6.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C34D3C1B6A380F0046757A /* u6.m */; };
 		11C7F3831B01FCEB005937EB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C7F3821B01FCEB005937EB /* Cocoa.framework */; };
 		11C7F3851B01FD03005937EB /* Lablib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C7F3841B01FD03005937EB /* Lablib.framework */; };
 		11C7F3881B020057005937EB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11C7F3871B020057005937EB /* Info.plist */; };
@@ -14,7 +20,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		110B47511B62090C00FB9C07 /* LLLabjackU6DataSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LLLabjackU6DataSettings.xib; sourceTree = "<group>"; };
+		110B47521B62090C00FB9C07 /* LLLabjackU6MonitorSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LLLabjackU6MonitorSettings.xib; sourceTree = "<group>"; };
+		110B47561B6212A000FB9C07 /* LLLabjackU6DataDevice.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LLLabjackU6DataDevice.plist; sourceTree = "<group>"; };
+		110B47581B6213F900FB9C07 /* LLLabjackU6Monitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLLabjackU6Monitor.h; sourceTree = "<group>"; };
+		110B47591B6213F900FB9C07 /* LLLabjackU6Monitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLLabjackU6Monitor.m; sourceTree = "<group>"; };
+		110B475A1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLLabjackU6MonitorSettings.h; sourceTree = "<group>"; };
+		110B475B1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLLabjackU6MonitorSettings.m; sourceTree = "<group>"; };
 		114325F61B0B5DB800F13C31 /* LLLabjackU6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLLabjackU6.h; sourceTree = "<group>"; };
+		1168A25B1B64F3E70038908D /* u6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = u6.h; sourceTree = "<group>"; };
+		11C34D3C1B6A380F0046757A /* u6.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = u6.m; sourceTree = "<group>"; };
 		11C7F3781B01FC66005937EB /* LablibLabjackU6.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LablibLabjackU6.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C7F3821B01FCEB005937EB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		11C7F3841B01FD03005937EB /* Lablib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lablib.framework; path = /Documents/Lablib/Frameworks/Lablib/build/Development/Lablib.framework; sourceTree = "<absolute>"; };
@@ -37,6 +52,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		110B47551B62117400FB9C07 /* PLists */ = {
+			isa = PBXGroup;
+			children = (
+				11C7F3871B020057005937EB /* Info.plist */,
+				110B47561B6212A000FB9C07 /* LLLabjackU6DataDevice.plist */,
+			);
+			name = PLists;
+			sourceTree = "<group>";
+		};
 		11C7F36F1B01FC66005937EB = {
 			isa = PBXGroup;
 			children = (
@@ -44,6 +68,7 @@
 				11C7F3891B0200B3005937EB /* Classes */,
 				11C7F38A1B0200BD005937EB /* Other Sources */,
 				11C7F38B1B0200D2005937EB /* Resources */,
+				110B47551B62117400FB9C07 /* PLists */,
 				11C7F3791B01FC66005937EB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +84,10 @@
 		11C7F3891B0200B3005937EB /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				110B47581B6213F900FB9C07 /* LLLabjackU6Monitor.h */,
+				110B47591B6213F900FB9C07 /* LLLabjackU6Monitor.m */,
+				110B475A1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.h */,
+				110B475B1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.m */,
 				11C7F38D1B020294005937EB /* LLLabjackU6DataDevice.h */,
 				11C7F38E1B020312005937EB /* LLLabjackU6DataDevice.m */,
 			);
@@ -70,6 +99,8 @@
 			children = (
 				11C7F3861B01FFDE005937EB /* LablibLabjackU6_Prefix.pch */,
 				114325F61B0B5DB800F13C31 /* LLLabjackU6.h */,
+				1168A25B1B64F3E70038908D /* u6.h */,
+				11C34D3C1B6A380F0046757A /* u6.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -77,7 +108,8 @@
 		11C7F38B1B0200D2005937EB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				11C7F3871B020057005937EB /* Info.plist */,
+				110B47511B62090C00FB9C07 /* LLLabjackU6DataSettings.xib */,
+				110B47521B62090C00FB9C07 /* LLLabjackU6MonitorSettings.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -147,7 +179,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				110B47531B62090C00FB9C07 /* LLLabjackU6DataSettings.xib in Resources */,
 				11C7F3881B020057005937EB /* Info.plist in Resources */,
+				110B47571B6212A000FB9C07 /* LLLabjackU6DataDevice.plist in Resources */,
+				110B47541B62090C00FB9C07 /* LLLabjackU6MonitorSettings.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,7 +193,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				110B475C1B6213F900FB9C07 /* LLLabjackU6Monitor.m in Sources */,
 				11C7F38F1B020312005937EB /* LLLabjackU6DataDevice.m in Sources */,
+				11C34D3D1B6A380F0046757A /* u6.m in Sources */,
+				110B475D1B6213F900FB9C07 /* LLLabjackU6MonitorSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,9 +236,19 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
+				"OTHER_LDFLAGS[arch=*]" = (
+					"-llabjackusb",
+					"-lusb-1.0",
+					"-L/usr/local/lib",
+				);
 				SDKROOT = macosx;
 			};
 			name = Development;
@@ -233,6 +281,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
@@ -287,7 +340,7 @@
 				11C7F37E1B01FC66005937EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Development;
 		};
 		11C7F37F1B01FC67005937EB /* Build configuration list for PBXNativeTarget "LablibLabjackU6" */ = {
 			isa = XCConfigurationList;
@@ -296,7 +349,7 @@
 				11C7F3811B01FC67005937EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};

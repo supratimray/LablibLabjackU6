@@ -11,6 +11,7 @@
 
 #define kLLLabjackU6ADChannels			7
 #define kLLLabjackU6DAVoltageRangeV		10.24
-#define	kLLLabjackU6TicksPerMS			800L				// time base for LabjackU6
+#define kLLLabjackU6DigitalBits			4                   // 4 digital bits are used for timestamp data
+#define	kLLLabjackU6TicksPerMS			50L                 // time base for LabjackU6 - 50 kHz
 
 #endif

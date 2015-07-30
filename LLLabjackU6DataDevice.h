@@ -10,8 +10,9 @@
 #ifndef LablibLabjackU6_LLLabjackU6DataDevice_h
 #define LablibLabjackU6_LLLabjackU6DataDevice_h
 
-# import <Lablib/Lablib.h>
-# import "LLLabjackU6.h"
+# import <Lablib/LLDataDevice.h>
+# import "LLLabjackU6Monitor.h"
+#import "u6.h"
 
 #define kMaxInstructions 			12
 #define kMinSampleBuffer			8192
@@ -24,12 +25,12 @@
     long				deviceNum;
     unsigned long		digitalOutputWord;
     BOOL				justStartedLabjackU6;
-    Ptr					labjack;
+    HANDLE				labjack;
     double				LabjackSamplePeriodS;
     long				LabjackTicksPerInstruction;
     double				lastReadDataTimeS;
-//    LLITCMonitor		*monitor;
-//    double			monitorStartTimeS;
+    LLLabjackU6Monitor	*monitor;
+    double              monitorStartTimeS;
     double				nextSampleTimeS[kLLLabjackU6ADChannels];
     long				numInstructions;
     short				*samples;
@@ -37,18 +38,24 @@
     NSLock				*sampleLock;
     NSData				*sampleResults[kLLLabjackU6ADChannels];
     double				sampleTimeS;
+    unsigned short		timestampActiveBits;
+    NSMutableData		*timestampData[kLLLabjackU6DigitalBits];
+    NSLock				*timestampLock;
+    NSData				*timestampResults[kLLLabjackU6DigitalBits];
+    double				timestampTickS[kLLLabjackU6DigitalBits];
     NSArray             *topLevelObjects;
     BOOL				USB18;
-//    ITCMonitorValues	values;
+    LabjackU6MonitorValues	values;
     
+    IBOutlet NSWindow 	*settingsWindow;
 }
 
 - (void)allocateSampleBuffer:(short **)ppBuffer size:(long)sizeInShorts;
 - (void)closeLabjackU6;
 - (int)getAvailable;
 - (id)initWithDevice:(long)deviceNum;
-- (Ptr)itc;
-- (void)loadInstructions;
+- (HANDLE)labjack;
+//- (void)loadInstructions;
 - (id <LLMonitor>)monitor;
 - (BOOL)openLabjackU6:(long)deviceNum;
 - (void)readData;

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "11C7F3771B01FC66005937EB"
-               BuildableName = "LablibLabjackU6.bundle"
+               BuildableName = "LablibLabjackU6.plugin"
                BlueprintName = "LablibLabjackU6"
                ReferencedContainer = "container:LablibLabjackU6.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "11C7F3771B01FC66005937EB"
-            BuildableName = "LablibLabjackU6.bundle"
+            BuildableName = "LablibLabjackU6.plugin"
             BlueprintName = "LablibLabjackU6"
             ReferencedContainer = "container:LablibLabjackU6.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "11C7F3771B01FC66005937EB"
-            BuildableName = "LablibLabjackU6.bundle"
+            BuildableName = "LablibLabjackU6.plugin"
             BlueprintName = "LablibLabjackU6"
             ReferencedContainer = "container:LablibLabjackU6.xcodeproj">
          </BuildableReference>

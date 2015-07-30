@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LLLabjackU6InvertBit00</key>
+	<integer>0</integer>
+	<key>LLLabjackU6InvertBit15</key>
+	<integer>0</integer>
+	<key>LLLabjackU6SamplePeriodMS0</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS1</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS2</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS3</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS4</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS5</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS6</key>
+	<real>5</real>
+	<key>LLLabjackU6SamplePeriodMS7</key>
+	<real>5</real>
+	<key>LLLabjackU6TimestampPeriodMS00</key>
+	<integer>1</integer>
+	<key>LLLabjackU6TimestampPeriodMS01</key>
+	<integer>1</integer>
+	<key>LLLabjackU6TimestampPeriodMS02</key>
+	<integer>1</integer>
+	<key>LLLabjackU6TimestampPeriodMS03</key>
+	<integer>1</integer>
+</dict>
+</plist>
