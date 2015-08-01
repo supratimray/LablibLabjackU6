@@ -11,12 +11,29 @@
 //  LabjackU6 has 14 single-ended analog inputs and 20 digital I/O channels. We use the analog inputs in differential mode, such that we only have 7 Sampledata channels. We use 16 digital channels for sending digital words to other data acquisition systems and controlling the reward circuit (FIO-0to7 and EIO-0to7). Therefore we only have 4 Timestamp data channels (CIO0-3).
  
 //  We allow different sampling rates on different sampling channels. This is achieved by sampling at the maximum requested rate and then throwing out samples that are not needed, similar to the approach used in ITC18. Read LLITCDataDevice.m for details.
+ 
+// 1 Aug 2015 - As of now only the digital ports have been configured for controlling the juice system and also send digital pulses. This works as long as eye data can be acquired from a separate source, such as an Eyelink.
 */
 
 #import "LLLabjackU6DataDevice.h"
 #import <Lablib/LLSystemUtil.h>
 #import <Lablib/LLPluginController.h>
-//#import "labjackusb.h"
+
+#define kUseLLDataDevices							// needed for versioning
+/*
+extern size_t malloc_size(void *ptr);
+
+#define kIsDigitalInput(i)			((instructions[i] & ITC18_INPUT_DIGITAL) && (instructions[i] != ITC18_INPUT_SKIP))
+#define kDigitalOverSample			4
+#define kDriftTimeLimitMS			0.010
+#define kDriftFractionLimit			0.001
+#define kGarbageLength				3
+#define	kReadDataIntervalS			(USB18 ? 0.005 : 0.000)
+
+#define chunksAtOneTickPerInstructHz	(kLLITC18TicksPerMS * 1000.0 / numInstructions)
+#define maxSampleRateHz					(chunksAtOneTickPerInstructHz / ITC18_MINIMUM_TICKS)
+#define minSampleRateHz					(chunksAtOneTickPerInstructHz / ITC18_MAXIMUM_TICKS)
+*/
 
 NSString *LLLabjackU6InvertBit00Key = @"LLLabjackU6InvertBit00";
 NSString *LLLabjackU6InvertBit15Key = @"LLLabjackU6InvertBit15";
@@ -54,7 +71,6 @@ static long	LabjackU6Count = 0;
     if (labjack != nil) {
         [deviceLock lock];
         closeUSBConnection(labjack);
-        free(labjack);
         labjack = nil;
         [deviceLock unlock];
     }
@@ -65,6 +81,7 @@ static long	LabjackU6Count = 0;
     [self setDataEnabled:[NSNumber numberWithBool:NO]];
     [NSApp runModalForWindow:settingsWindow];
     [settingsWindow orderOut:self];
+    [self ljU6ConfigDigitalPorts];
     [self loadInstructions];
 }
 
@@ -103,8 +120,7 @@ static long	LabjackU6Count = 0;
             digitalOutputWord ^=  0x8000;
         }
         [deviceLock lock];
-//        ITC18_WriteAuxiliaryDigitalOutput(itc, digitalOutputWord);
-        NSLog(@"writing bits: %ld",digitalOutputWord);
+        [self ljU6WriteStrobedWord:digitalOutputWord];
         [deviceLock unlock];
     }
 }
@@ -124,8 +140,7 @@ static long	LabjackU6Count = 0;
             digitalOutputWord ^= 0x8000;
         }
         [deviceLock lock];
-//        ITC18_WriteAuxiliaryDigitalOutput(itc, digitalOutputWord);
-        NSLog(@"writing bits: %ld",digitalOutputWord);
+        [self ljU6WriteStrobedWord:digitalOutputWord];
         [deviceLock unlock];
     }
 }
@@ -145,8 +160,7 @@ static long	LabjackU6Count = 0;
             digitalOutputWord ^= 0x8000;
         }
         [deviceLock lock];
-//        ITC18_WriteAuxiliaryDigitalOutput(itc, digitalOutputWord);
-        NSLog(@"writing bits: %ld",digitalOutputWord);
+        [self ljU6WriteStrobedWord:digitalOutputWord];
         [deviceLock unlock];
     }
 }
@@ -163,7 +177,6 @@ static long	LabjackU6Count = 0;
 - (void)doInitializationWithDevice:(long)requestedNum;
 {
     long index;
-//    int ranges[kLLLabjackU6ADChannels];
     long channel;
     float period;
     NSUserDefaults *defaults;
@@ -212,13 +225,9 @@ static long	LabjackU6Count = 0;
     monitor = [[LLLabjackU6Monitor alloc] initWithID:[self name] description:@"Labjack U6 I/O"];
     [self allocateSampleBuffer:&samples size:kMinSampleBuffer];
     if ([self openLabjackU6:deviceNum]) {
-//        for (index = 0; index < ITC18_AD_CHANNELS; index++) {	// Set AD voltage range
-//            ranges[index] = ITC18_AD_RANGE_10V;
-//        }
-//        ITC18_SetRange(itc, ranges);
-//        ITC18_SetDigitalInputMode(itc, YES, NO);				// latch and do not invert
-        [self loadInstructions];
+        [self ljU6ConfigDigitalPorts];
         [self digitalOutputBits:0xffff];
+        [self loadInstructions];
     }
     [[NSBundle bundleForClass:[self class]] loadNibNamed:@"LLLabjackU6DataSettings" owner:self topLevelObjects:&topLevelObjects];
     [topLevelObjects retain];
@@ -238,7 +247,7 @@ static long	LabjackU6Count = 0;
 
 - (int)getAvailable;
 {
-    int available, overflow;
+    int available, overflow=0;
     
 //    ITC18_GetFIFOReadAvailableOverflow(itc, &available, &overflow);
     if (overflow != 0) {
@@ -280,6 +289,8 @@ static long	LabjackU6Count = 0;
 
 - (void)loadInstructions;
 {
+    // Configure Labjack streaming mode based on the digital (CI0-3) and analog sampling rates
+    [self ljU6ConfigStreaming];
 /*
     long channel, c, d;
     long enabledADChannels, maxADRateHz, maxDigitalRateHz, ADPerDigital;
@@ -386,7 +397,6 @@ static long	LabjackU6Count = 0;
         }
     }
  */
-    NSLog(@"Loading instructions");
 }
 
 - (id <LLMonitor>)monitor;
@@ -421,65 +431,264 @@ static long	LabjackU6Count = 0;
 
 - (BOOL)openLabjackU6:(long)devNum;
 {
-    NSLog(@"Opening LabjackU6...");
+    devicePresent = NO;
     
-    labjack = openUSBConnection(-1);
-/*
-    long code;
-    long interfaceCodes[] = {0x0, USB18_CL};
-    
-    [deviceLock lock];
-    if (itc == nil) {						// currently opened?
-        if ((itc = malloc(ITC18_GetStructureSize())) == nil) {
-            [deviceLock unlock];
-            NSRunAlertPanel(@"LLITC18IODevice",  @"Failed to allocate pLocal memory.", @"OK", nil, nil);
-            exit(0);
+    if (devNum==0) {
+        [deviceLock lock];
+        if (labjack != NULL) {            // close if currently open
+            closeUSBConnection(labjack);
+        }
+        labjack = openUSBConnection(-1); // Open the first found Labjack
+        if (labjack != NULL) {
+            NSLog(@" Labjack U6 opened successfully");
+            devicePresent = YES;
         }
     }
     else {
-        ITC18_Close(itc);
-    }
-    
-    // Now the ITC is closed, and we have a valid pointer
-    
-    for (code = 0, devicePresent = NO; code < sizeof(interfaceCodes) / sizeof(long); code++) {
-        NSLog(@"LLITC18DataDevice: attempting to initialize device %ld using code %ld",
-              devNum, devNum | interfaceCodes[code]);
-        if (ITC18_Open(itc, devNum | interfaceCodes[code]) != noErr) {
-            continue;									// failed, try another code
-        }
-        
-        // the ITC has opened, now initialize it
-        
-        if (ITC18_Initialize(itc, ITC18_STANDARD) != noErr) {
-            ITC18_Close(itc);							// failed, close to try again
-        }
-        else {
-            USB18 = interfaceCodes[code] == USB18_CL;
-            devicePresent = YES;						// successful initialization
-            break;
-        }
-    }
-    if (!devicePresent) {
-        free(itc);
-        itc = nil;
-    }
-    else {
-        NSLog(@"LLITC18DataDevice: succeeded initialize device %ld using code %ld",
-              devNum, devNum | interfaceCodes[code]);
+        NSLog(@"This case is not supported yet. Todo: Find the local ID of the device and initialize using that..");
     }
     [deviceLock unlock];
- */
     return devicePresent;
 }
 
 - (void)readData;
 {
+/*
+    short index, bitIndex, sampleChannel, *pSamples;
+    unsigned short whichBit, timestamp;
+    long sets, set;
+    BOOL bitOn;
+    int available;
+    
+    // Don't attempt to read if we just read a little while ago
+    
+    if (lastReadDataTimeS + kReadDataIntervalS > [LLSystemUtil getTimeS]) {
+        return;
+    }
+    
+    if (![deviceLock tryLock]) {
+        [deviceLock lock];			// Wait here for the lock, then check time again
+        if (lastReadDataTimeS + kReadDataIntervalS > [LLSystemUtil getTimeS]) {
+            [deviceLock unlock];
+            return;
+        }
+    }
+    
+    // When a sequence is started, the first three entries in the FIFO are garbage.  They should be thrown out.
+    
+    if (justStartedITC18) {
+        available = [self getAvailable];
+        if (available < kGarbageLength + 1) {
+            lastReadDataTimeS = [LLSystemUtil getTimeS];
+            [deviceLock unlock];
+            return;
+        }
+        ITC18_ReadFIFO(itc, kGarbageLength, samples);
+        justStartedITC18 = NO;
+    }
+    
+    // Unloading complete cycles of samples.  We gather all complete sets in one call to
+    // ITC18_ReadFIFO, and we don't check again when we are done.  This is prevent overloading
+    // the USB with frequent calls, which can happen if the sample sets are small and coming
+    // in at a fast rate.  We need to leave it so that they can be read in large sets.
+    
+    available = [self getAvailable];
+    if (available > numInstructions) {									// >, so ITC doesn't go empty
+        sets = available / numInstructions;								// number of complete sets available
+        if (numInstructions * sets * sizeof(short) > malloc_size(samples)) {
+            [self allocateSampleBuffer:&samples size:numInstructions * sets];
+        }
+        ITC18_ReadFIFO(itc, numInstructions * sets, samples);			// read all available sets
+        for (set = 0; set < sets; set++) {								// process each set
+            pSamples = &samples[numInstructions * set];					// point to start of set
+            for (index = sampleChannel = 0; index < numInstructions; index++) {	// for every instruction
+                
+                // If this is a digital input word, process as a timestamp
+                
+                if (kIsDigitalInput(index)) {								// digital input instruction
+                    digitalInputBits = pSamples[index];						// save the digital input word
+                    for (bitIndex = 0; bitIndex < kLLITC18DigitalBits; bitIndex++) { // check every bit
+                        whichBit = (0x1 << bitIndex);						// get the bit pattern for one bit
+                        if (whichBit & timestampChannels) {					// enabled bit?
+                            bitOn = (whichBit & pSamples[index]); 			// bit on?
+                            if (timestampActiveBits & whichBit) {			// was active
+                                if (!bitOn) {								//  but now inactive
+                                    timestampActiveBits &= ~whichBit;		//  so clear flag
+                                }
+                            }
+                            else if (bitOn) {								// active now but was not before
+                                timestampActiveBits |= whichBit;			// flag channel as active
+                                values.timestampCount[bitIndex]++;			// increment timestamp count
+                                [timestampLock lock];						// add to timestamp buffer
+                                timestamp = round(sampleTimeS / timestampTickS[bitIndex]);
+                                [timestampData[bitIndex] appendBytes:&timestamp length:sizeof(unsigned short)];
+                                [timestampLock unlock];
+                            }
+                        }
+                    }
+                }
+                
+                // It's AD or a skipped sample.  If this is an A/D sample, save it (if it is enabled)
+                
+                else {
+                    while (sampleChannel < kLLITC18ADChannels && !(sampleChannels & (0x1 << sampleChannel))) {
+                        sampleChannel++;
+                    }
+                    if (sampleChannel < kLLITC18ADChannels && sampleTimeS >= nextSampleTimeS[sampleChannel]) {
+                        [sampleLock lock];										// add to AD sample buffer
+                        [sampleData[sampleChannel] appendBytes:&pSamples[index] length:sizeof(short)];
+                        nextSampleTimeS[sampleChannel] += [[samplePeriodMS objectAtIndex:sampleChannel] floatValue] / 1000.0;
+                        [sampleLock unlock];									// add to AD sample buffer
+                    }
+                    sampleChannel++;
+                }
+            }
+            sampleTimeS += ITCSamplePeriodS;
+            values.samples++; 
+        }
+    }
+    lastReadDataTimeS = [LLSystemUtil getTimeS];
+    [deviceLock unlock];
+ */
 }
 
 - (void)setDataEnabled:(NSNumber *)state;
 {
+    int available;
+    long channel;
+    double channelPeriodMS;
+    long maxSamplingRateHz;
+    
+    if (labjack == nil) {
+        return;
+    }
+    if ([state boolValue] && !dataEnabled) {
+        [deviceLock lock];
+        
+        // Scan through the sample and timestamp sampling settings, finding the fastest enabled rate.
+        // The rate here is the requested sampling rate.  It does not take into account the need to
+        // oversample digital inputs because that is built into the instruction sequence
+        
+        for (channel = maxSamplingRateHz = 0; channel < kLLLabjackU6ADChannels; channel++) {
+            if (sampleChannels & (0x01 << channel)) {
+                channelPeriodMS = [[samplePeriodMS objectAtIndex:channel] floatValue];
+                nextSampleTimeS[channel] = channelPeriodMS / 1000.0;
+                maxSamplingRateHz = MAX(1000.0 / channelPeriodMS, maxSamplingRateHz);
+            }
+        }
+        for (channel = 0; channel < kLLLabjackU6DigitalBits; channel++) {
+            if (timestampChannels & (0x01 << channel)) {
+                channelPeriodMS = [[timestampPeriodMS objectAtIndex:channel] floatValue];
+                timestampTickS[channel] = 0.001 * channelPeriodMS;
+                maxSamplingRateHz = MAX(1000.0 / channelPeriodMS, maxSamplingRateHz);
+            }
+        }
+        if (maxSamplingRateHz != 0) {							// no channels enabled
+            sampleTimeS = LabjackSamplePeriodS;					// one period complete on first sample
+            timestampActiveBits = 0x0;
+            justStartedLabjackU6 = YES;
+            [monitor initValues:&values];
+            values.samplePeriodMS = LabjackSamplePeriodS * 1000.0;
+            values.instructionPeriodMS = LabjackSamplePeriodS / numInstructions * 1000.0;
+//            ITC18_SetSamplingInterval(itc, ITCTicksPerInstruction, false);
+//            ITC18_StopAndInitialize(itc, YES, YES);
+            monitorStartTimeS = [LLSystemUtil getTimeS];
+//            ITC18_Start(itc, NO, NO, NO, NO);		// no trigger, no output, no stopOnOverflow, (reserved)
+            dataEnabled = YES;
+            lastReadDataTimeS = 0;
+        }
+        [deviceLock unlock];
+    }
+    else if (![state boolValue] && dataEnabled) {
+        [deviceLock lock];
+//        ITC18_Stop(itc);										// stop the ITC18
+        [deviceLock unlock];
+        values.cumulativeTimeMS = ([LLSystemUtil getTimeS] - monitorStartTimeS) * 1000.0;
+        
+        // Check whether the number of samples collected is what is predicted based on the elapsed time.
+        // This is a check for drift between the computer clock and the LabjackU6 clock.  The first step
+        // is to drain any complete sample sets from the FIFO.  Then we see how many instructions
+        // remain in the FIFO (as an incomplete sample set).
+        
+        lastReadDataTimeS = 0;									// permit a FIFO read
+        [self readData];										// drain FIFO
+        [deviceLock lock];
+        available = [self getAvailable];
+        [deviceLock unlock];
+        values.sequences = 1;
+        values.instructions = values.samples * numInstructions + available;
+        if (values.instructions == 0) {
+            NSLog(@" ");
+            NSLog(@"WARNING: LLLabjackU6: values.instructions == 0");
+            NSLog(@"sequenceStartTimeS: %f", monitorStartTimeS);
+            NSLog(@"time now: %f", [LLSystemUtil getTimeS]);
+            NSLog(@"justStartedITC18: %d", justStartedLabjackU6);
+            NSLog(@"dataEnabled: %d", dataEnabled);
+            NSLog(@"values.cumulativeTimeMS: %f", values.cumulativeTimeMS);
+            NSLog(@"values.samples: %ld", values.samples);
+            NSLog(@"values.samplePeriodMS: %f", values.samplePeriodMS);
+            NSLog(@"values.instructions: %ld", values.instructions);
+            NSLog(@"values.instructionPeriodMS: %f", values.instructionPeriodMS);
+            NSLog(@"values.sequences: %ld", values.sequences);
+            NSLog(@" ");
+        }
+        else {
+            [monitor sequenceValues:values];
+        }
+        dataEnabled = NO;
+    }
 }
+
+- (NSData **)sampleData;
+{
+    long channel;
+    
+    if (labjack == nil) {
+        return nil;
+    }
+    [self readData];								// read data from ITC18
+    [sampleLock lock];								// check whether there are samples to return
+    for (channel = 0; channel < kLLLabjackU6ADChannels; channel++) {
+        if ([sampleData[channel] length] > 0) {
+            sampleResults[channel] = [NSData dataWithData:sampleData[channel]];
+            [sampleData[channel] setLength:0];
+        }
+        else {
+            sampleResults[channel] = nil;
+        }
+    }
+    [sampleLock unlock];
+    return sampleResults;								// return samples
+}
+
+/*
+// Overload the methods for changing sampling rates to make sure that the value is allowed by
+// the limits on the sampling rate
+
+- (BOOL)setSamplePeriodMS:(float)newPeriodMS channel:(long)channel;
+{
+    float newRateHz = 1000.0 / newPeriodMS;
+    
+    if (newRateHz >= minSampleRateHz && newRateHz <= maxSampleRateHz) {
+        return [super setSamplePeriodMS:newPeriodMS channel:channel];
+    }
+    else {
+        return NO;
+    }
+}
+
+- (BOOL)setTimestampTicksPerMS:(long)newTicksPerMS channel:(long)channel;
+{
+    float newRateHz = newTicksPerMS * 1000;
+    
+    if (newRateHz >= minSampleRateHz && newRateHz <= maxSampleRateHz) {
+        return [super setTimestampTicksPerMS:newTicksPerMS channel:channel];
+    }
+    else {
+        return NO;
+    }
+}
+ */
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
@@ -571,6 +780,87 @@ static long	LabjackU6Count = 0;
     }
     [timestampLock unlock];
     return timestampResults;								// return samples
+}
+
+
+//////////////////////// Labajck Low Level Functions //////////////////////////////
+-(void)ljU6ConfigStreaming;
+{
+    // Use streamConfig function (see 5.2.12 in U6 User Manual
+}
+
+-(void)ljU6ConfigDigitalPorts;
+{
+    /// set up IO ports
+    uint8 sendDataBuff[7];
+    uint8 Errorcode, ErrorFrame;
+    
+    // Setup FIO as output.
+    //       EIO as output
+    //       CIO as input
+    
+    sendDataBuff[0] = 29;       // PortDirWrite
+    sendDataBuff[1] = 0xff;     // update mask for FIO: update all
+    sendDataBuff[2] = 0xff;     // update mask for EIO
+    sendDataBuff[3] = 0x0f;     // update mask for CIO (only 4 bits)
+    
+    sendDataBuff[4] = 0xff;
+    sendDataBuff[5] = 0xff;
+    sendDataBuff[6] = 0x00;
+    
+    if(ehFeedback(labjack, sendDataBuff, 7, &Errorcode, &ErrorFrame, NULL, 0) < 0) {
+        NSLog(@"bug: ehFeedback error, see stdout");  // note we will get a more informative error on stdout
+    }
+    if(Errorcode) {
+        NSLog(@"ehFeedback: error with command, errorcode was %d",Errorcode);
+    }
+}
+
+- (void)ljU6WriteStrobedWord:(unsigned long)inWord;          // Copied and subsequently modified from LabjackU6 MWorks Plugin
+{
+
+    uint8 outFioBits = inWord & 0x00ff;       // Bits 0-7
+    uint8 outEioBits = (inWord & 0xff00) >> 8;  // Bits 8-15
+    
+    uint8 sendDataBuff[7];
+    uint8 Errorcode, ErrorFrame;
+    
+    if (inWord > 0xffff) {
+        NSLog(@"LLLabjackU6IODevice: error writing strobed word; value is larger than 16 bits");
+    }
+    
+//    NSLog(@"FIO: %d, EIO: %d",outFioBits,outEioBits);
+/*
+    sendDataBuff[0] = 29;			// PortDirWrite - for some reason the above seems to reset the FIO input/output state
+    sendDataBuff[1] = 0xff;         //  FIO: update
+    sendDataBuff[2] = 0xff;         //  EIO: update
+    sendDataBuff[3] = 0x0f;         //  CIO: update
+    sendDataBuff[4] = 0xff;         //  FIO hardcoded above
+    sendDataBuff[5] = 0xff;         //  EIO hardcoded above
+    sendDataBuff[6] = 0x00;         //  CIO hardcoded above
+    
+    sendDataBuff[7] = 27;			// PortStateWrite, 7 bytes total
+    sendDataBuff[8] = 0xff;			// FIO: update
+    sendDataBuff[9] = 0xff;			// EIO: update
+    sendDataBuff[10] = 0x00;		// CIO: don't update
+    sendDataBuff[11] = outFioBits;	// FIO: data
+    sendDataBuff[12] = outEioBits;	// EIO: data
+    sendDataBuff[13] = 0x00;        // CIO: data
+*/
+    sendDataBuff[0] = 27;			// PortStateWrite, 7 bytes total
+    sendDataBuff[1] = 0xff;			// FIO: update
+    sendDataBuff[2] = 0xff;			// EIO: update
+    sendDataBuff[3] = 0x00;         // CIO: don't update
+    sendDataBuff[4] = outFioBits;	// FIO: data
+    sendDataBuff[5] = outEioBits;	// EIO: data
+    sendDataBuff[6] = 0x00;         // CIO: data
+    
+    if(ehFeedback(labjack, sendDataBuff, 7, &Errorcode, &ErrorFrame, NULL, 0) < 0) {
+        NSLog(@"bug: ehFeedback error, see stdout");  // note we will get a more informative error on stdout
+    }
+    if(Errorcode) {
+        NSLog(@"ehFeedback: error with command, errorcode was %d",Errorcode);
+    }
 }
 
 @end

@@ -59,5 +59,4 @@
 - (id <LLMonitor>)monitor;
 - (BOOL)openLabjackU6:(long)deviceNum;
 - (void)readData;
-
 @end
